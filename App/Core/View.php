@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Core;
 
-use App\Exceptions\ViewNotFoundException;
+use App\Core\Exceptions\View\ViewNotFoundException;
 
 class View
 {
@@ -19,6 +19,9 @@ class View
         return new static($view, $params);
     }
 
+    /**
+     * @throws ViewNotFoundException
+     */
     public function render(): string
     {
         $viewPath = VIEW_PATH . '/' . $this->view . '.php';
@@ -38,6 +41,9 @@ class View
         return (string) ob_get_clean();
     }
 
+    /**
+     * @throws ViewNotFoundException
+     */
     public function __toString(): string
     {
         return $this->render();
