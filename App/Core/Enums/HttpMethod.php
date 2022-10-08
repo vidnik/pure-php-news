@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Core\Enums;
 
-enum Method: string
+enum HttpMethod: string
 {
     case Get = 'get';
     case Post = 'post';
