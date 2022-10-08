@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Core\Attributes\Route;
+use App\Core\Container;
 use App\Core\Exceptions\Routing\RouteNotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -14,7 +15,7 @@ class Router
 {
     private array $routes = [];
 
-    public function __construct(private readonly Container $container)
+    public function __construct(private Container $container)
     {
     }
 

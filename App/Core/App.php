@@ -2,11 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace App;
+namespace App\Core;
 
 use App\Core\Config;
 use App\Core\Container;
 use App\Core\Database;
+use App\Core\Exceptions\Routing\RouteNotFoundException;
 use App\Core\Router;
 use App\Core\View;
 
@@ -22,8 +23,6 @@ class App
         protected Config $config
     ) {
         static::$db = new Database($config->db ?? []);
-
-        $this->container->set(PaymentGatewayServiceInterface::class, PaymentGatewayService::class);
     }
 
     public static function db(): Database
