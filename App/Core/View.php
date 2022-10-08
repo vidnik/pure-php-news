@@ -27,7 +27,7 @@ class View
         $viewPath = VIEW_PATH . '/' . $this->view . '.php';
 
         if (! file_exists($viewPath)) {
-            throw new ViewNotFoundException();
+            throw new ViewNotFoundException('view on "'.$viewPath.'" doesn\'nt exist');
         }
 
         foreach($this->params as $key => $value) {
