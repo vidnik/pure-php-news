@@ -2,7 +2,8 @@
     "require": {
         "vlucas/phpdotenv": "^5.4",
       "ext-pdo": "*",
-        "psr/container": "^2.0"
+        "psr/container": "^2.0",
+      "ext-xdebug": "*"
     },
     "autoload": {
         "psr-4": {

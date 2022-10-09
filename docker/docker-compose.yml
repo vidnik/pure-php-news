@@ -8,6 +8,8 @@ services:
     container_name: newsphp-app
     restart: always
     working_dir: /var/www/
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ../:/var/www
   nginx:
@@ -16,12 +18,16 @@ services:
     restart: always
     ports:
       - "8000:80"
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ../:/var/www
       - ./nginx:/etc/nginx/conf.d
   db:
     container_name: newphp-db
     image: mysql:8.0
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ./storage/mysql:/var/lib/mysql
     user: "1000:50"
