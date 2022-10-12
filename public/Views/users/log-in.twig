@@ -1,21 +1,26 @@
-<div class="container-login">
-    <div class="wrapper-login">
+{% extends "base.twig" %}
+
+{% block title %}Log-in{% endblock %}
+
+{% block content %}
+
+<div>
         <h2>Log in</h2>
 
         <form action="/log-in" method ="post">
             <input type="text" placeholder="Username *" name="username">
             <span class="invalidFeedback">
-                <?php echo $data['usernameError']; ?>
+                {{ errors.usernameError }}
             </span>
 
             <input type="password" placeholder="Password *" name="password">
             <span class="invalidFeedback">
-                <?php echo $data['passwordError']; ?>
+                {{ errors.passwordError }}
             </span>
 
             <button id="submit" type="submit" value="submit">Submit</button>
 
             <p class="options">Not registered yet? <a href="/sign-up">Create an account!</a></p>
         </form>
-    </div>
 </div>
+{% endblock %}
