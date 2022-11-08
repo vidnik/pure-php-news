@@ -1,0 +1,47 @@
+{% extends "admin/base.twig" %}
+
+{% block title %}Admin-users{% endblock %}
+
+{% block content %}
+    <div class="mt-5 text-center">
+        <h1>Update user page</h1>
+    </div>
+    <div class="d-flex justify-content-center container mt-5">
+        <div class="w-100 mt-5">
+            <form style="width: 400px; margin-left: auto; margin-right: auto" action="/admin/user/update?id={{ user.id }}" method ="post">
+                <div class="form-group mb-3">
+                    <label for="Username">Username</label>
+                    <input type="text" class="form-control" id="Username" placeholder="username" name="username" value="{{ user.username }}">
+                    {% if errors.usernameError != '' %}
+                        <label class="mt-2" style="color: red;">{{ errors.usernameError }}</label>
+                    {% endif %}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="InputEmail">Email address</label>
+                    <input type="email" class="form-control" id="InputEmail" name="email" aria-describedby="emailHelp" placeholder="Enter email" value="{{ user.email }}">
+                    {% if errors.emailError != '' %}
+                        <label class="mt-2" style="color: red;">{{ errors.emailError }}</label>
+                    {% endif %}
+                </div>
+                <label class="mb-2">
+                    User groups:
+                </label>
+                {% for group in groups %}
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="{{ group.name }}" name="groups[]" value="{{  group.id }}"
+                                {% if group.active == true %} checked {% endif %}>
+                        <label class="form-check-label" for="{{ group.name }}">{{ group.name }} group</label>
+                    </div>
+                {% else %}
+                {% endfor %}
+                <div class="btn-toolbar">
+                    <div class="p-3 d-flex align-items-center"><button type="submit" class="btn btn-primary">SAVE</button></div>
+                    <div class="p-3 d-flex align-items-center">
+                        <a class="btn btn-warning" href="/admin/user/delete?id={{ user.id }}" role="button">Delete user</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

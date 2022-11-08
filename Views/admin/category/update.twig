@@ -1,0 +1,37 @@
+{% extends "admin/base.twig" %}
+
+{% block title %}Admin-categories{% endblock %}
+
+{% block content %}
+    <div class="mt-5 text-center">
+        <h1>Update category page</h1>
+    </div>
+    <div class="d-flex justify-content-center container mt-5">
+        <div class="w-100 mt-5">
+
+            <form style="width: 400px; margin-left: auto; margin-right: auto" action="/admin/category/update?id={{ category.id }}" method ="post">
+                <div class="form-group mb-3">
+                    <label for="name">Category name *</label>
+                    <input type="text" class="form-control" id="name" placeholder="name" name="name" value="{{ category.name }}">
+                    {% if errors.nameError != '' %}
+                        <label class="mt-2" style="color: red;">{{ errors.nameError }}</label>
+                    {% endif %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="description">Description *</label>
+                    <textarea class="form-control" style="height: 30vh" id="description" name="description">{{ category.description }}</textarea>
+                    {% if errors.descriptionError != '' %}
+                        <label class="mt-2" style="color: red;">{{ errors.descriptionError }}</label>
+                    {% endif %}
+                </div>
+
+                <div class="btn-toolbar">
+                    <div class="p-3 d-flex align-items-center"><button type="submit" class="btn btn-primary">SAVE</button></div>
+                    <div class="p-3 d-flex align-items-center">
+                        <a class="btn btn-warning" href="/admin/category/delete?id={{ category.id }}" role="button">Delete category</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

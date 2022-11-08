@@ -1,0 +1,58 @@
+{% extends "base.twig" %}
+
+{% block title %}Reply{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <!-- Comment List Start -->
+                    <div class="mb-3">
+                        <div class="section-title mb-0">
+                            <h4 class="m-0 text-uppercase font-weight-bold">Reply to comment</h4>
+                        </div>
+                        <div class="bg-white border border-top-0 p-4">
+                                <div class="media mb-4">
+                                    <div class="media-body">
+                                        <h6><a class="text-secondary font-weight-bold" href="">{{ comment.username }}</a>
+                                            <small><i>{{ comment.datetime|date('M d, Y') }}</i></small></h6>
+                                        <h5 class="text-secondary font-weight-bold">{{ comment.title }}</h5>
+                                        <p>{{ comment.text }}</p>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <!-- Comment List End -->
+                    <div class="mb-3">
+                        <div class="section-title mb-0">
+                            <h4 class="m-0 text-uppercase font-weight-bold">Leave a comment</h4>
+                        </div>
+                        <div class="bg-white border border-top-0 p-4">
+                            <form action="/comment/reply?id={{ comment.id }}" method ="post" enctype="multipart/form-data">
+                                <div class="form-row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="title">Title *</label>
+                                            <input type="text" class="form-control" id="title" name="title">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="text">Text *</label>
+                                    <textarea id="text" cols="30" rows="5" class="form-control" name="text"></textarea>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <input type="submit" value="Leave a comment"
+                                           class="btn btn-primary font-weight-semi-bold py-2 px-3">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

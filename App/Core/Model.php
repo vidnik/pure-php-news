@@ -15,10 +15,25 @@ abstract class Model
         $this->db = App::db();
     }
 
-    public function fetchLazy(PDOStatement $stmt): \Generator
+
+    /**
+     * Generates string with sql Values() for multiple records and execute full query
+     * @param array $list
+     * @param int $id
+     * @param string $query
+     * @return void
+     */
+    public function multipleInsert(array $list, int $id, string $query): void
     {
-        foreach($stmt as $record) {
-            yield $record;
+        $insertData = array();
+        $insertQuery = array();
+        foreach ($list as $element) {
+            $insertQuery[] = '(?, ?)';
+            $insertData[] = $id;
+            $insertData[] = intval($element);
         }
+        $query .= implode(', ', $insertQuery) . ';';
+        $query = $this->db->prepare($query);
+        $query->execute($insertData);
     }
 }

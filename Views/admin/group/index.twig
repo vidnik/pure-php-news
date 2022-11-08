@@ -1,0 +1,52 @@
+﻿{% extends "admin/base.twig" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+    <div class="mt-5 text-center">
+        <h1>Groups management page</h1>
+    </div>
+    <div class="d-flex justify-content-center container mt-5">
+        <div class="w-100">
+            <a class="btn btn-primary col-2 mb-4 ms-auto" href="/admin/group/add" role="button">Add new group</a>
+
+            <div class="justify-content-center">
+                <div class="flextable">
+                    <div class="flex_row">
+                        <div class="flex_field">id</div>
+                        <div class="flex_field">name</div>
+                        <div class="flex_field">default</div>
+                        <div class="flex_field">permissions</div>
+                    </div>
+
+                    {% for group in groups %}
+                        <a href="/admin/group/update?id={{ group.id }}">
+                            <div class="flex_row">
+                                <div class="flex_field">{{ group.id }}</div>
+                                <div class="flex_field">{{ group.name }}</div>
+                                <div class="flex_field">
+                                    {% if group.default == true %}
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    {% else %}
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex_field">
+                                     {% for permission in group.permissions %}
+                                         {{ permission.name }};
+                                     {% else %}
+                                     {% endfor %}
+                                </div>
+                            </div>
+                        </a>
+
+                    {% else %}
+                        There are no any group in db
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

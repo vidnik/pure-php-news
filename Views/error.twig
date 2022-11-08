@@ -1,0 +1,9 @@
+{% extends "base.twig" %}
+
+{% block title %}Error {{ errorCode }}{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center vh-100 bg-primary">
+    <h1 class="display-1 fw-bold text-white">{{ errorCode }}/{{ errorMessage }}</h1>
+</div>
+{% endblock %}

@@ -1,10 +1,17 @@
 {
     "require": {
         "vlucas/phpdotenv": "^5.4",
-      "ext-pdo": "*",
-        "psr/container": "^2.0",
-      "ext-xdebug": "*"
+         "ext-pdo": "*",
+         "psr/container": "^2.0",
+         "ext-xdebug": "*",
+        "twig/twig": "^3.4",
+        "symfony/asset": "^6.1",
+        "symfony/twig-bridge": "^6.1"
     },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*"
+  },
+
     "autoload": {
         "psr-4": {
             "App\\": "App/"

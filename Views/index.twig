@@ -1,0 +1,182 @@
+{% extends "base.twig" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    <!-- Main News Slider Start -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-7 px-0">
+                <div class="owl-carousel main-carousel position-relative">
+                    {% for article in articles[0:3] %}
+                    <div class="position-relative overflow-hidden" style="height: 500px;">
+                        <img class="img-fluid h-100" src="{{ asset(article.image , "images") }}" alt="{{ article.image }} " style="object-fit: cover;">
+                        <div class="overlay">
+                            <div class="mb-2">
+                                {% for category in article.categories %} <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                    href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                {% endfor %}
+                                {{ article.date|date('M d, Y') }}
+                            </div>
+                            <a class="h2 m-0 text-white text-uppercase font-weight-bold" href="/article?id={{ article.id }}">
+                                {{ article.title|length > 55 ? article.title|slice(0, 55) ~ '...' : article.title }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-5 px-0">
+                <div class="row mx-0">
+
+                    {% for article in articles[3:4] %}
+                    <div class="col-md-6 px-0">
+                        <div class="position-relative overflow-hidden" style="height: 250px;">
+                            <img class="img-fluid w-100 h-100" src="{{ asset(article.image , "images") }}"
+                                 alt="{{ article.image }}" style="object-fit: cover;">
+                            <div class="overlay">
+                                <div class="mb-2">
+                                    {% for category in article.categories %}
+                                        <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                          href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                    {% endfor %}
+                                   <small>{{ article.date|date('M d, Y') }}</small>
+                                </div>
+                                <a class="h6 m-0 text-white text-uppercase font-weight-semi-bold" href="/article?id={{ article.id }}">
+                                    {{ article.title|length > 55 ? article.title|slice(0, 55) ~ '...' : article.title }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Main News Slider End -->
+
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-12 mt-4">
+                            <div class="section-title">
+                                <h4 class="m-0 text-uppercase font-weight-bold">Latest News</h4>
+                                <a class="text-secondary font-weight-medium text-decoration-none" href="/recent">View All</a>
+                            </div>
+                        </div>
+                        {% for article in articles[7:4] %}
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <img class="img-fluid w-100" src="{{ asset(article.image , "images") }}"
+                                     alt="{{ article.image }}" style="object-fit: cover;">
+                                <div class="bg-white border border-top-0 p-4">
+                                    <div class="mb-2">
+                                        {% for category in article.categories %}
+                                            <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                               href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    <a class="h4 d-block mb-3 text-secondary text-uppercase font-weight-bold" href="/article?id={{ article.id }}">
+                                        {{ article.title|length > 55 ? article.title|slice(0, 55) ~ '...' : article.title }}
+                                    </a>
+                                    <p class="m-0">
+                                        {{ article.text|length > 100 ? article.text|slice(0, 100) ~ '...' : article.text }}
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-between bg-white border border-top-0 p-4">
+                                    <div class="d-flex align-items-center">
+                                        <small>{{ article.username }}</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <small>{{ article.date|date('M d, Y') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% for article in articles[11:4] %}
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center bg-white mb-3" style="height: 110px;">
+                                <img class="img-fluid" src="{{ asset(article.image , "images") }}"
+                                     alt="{{ article.image }}" width="110px">
+                                <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center border border-left-0">
+                                    <div class="mb-2">
+                                        {% for category in article.categories %}
+                                            <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                               href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                        {% endfor %}
+                                        <a class="text-body" href=""><small>{{ article.date|date('M d, Y') }}</small></a>
+                                    </div>
+                                    <a class="h6 m-0 text-secondary text-uppercase font-weight-bold" href="/article?id={{ article.id }}">
+                                        {{ article.title|length > 30 ? article.title|slice(0, 30) ~ '...' : article.title }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if articles[15] %}
+                        <div class="col-lg-12">
+                            <div class="row news-lg mx-0 mb-3">
+                                <div class="col-md-6 h-100 px-0">
+                                    <img class="img-fluid h-100" src="{{ asset(articles[15].image , "images") }}" style="object-fit: cover;">
+                                </div>
+                                <div class="col-md-6 d-flex flex-column border bg-white h-100 px-0">
+                                    <div class="mt-auto p-4">
+                                        <div class="mb-2">
+                                            {% for category in articles[15].categories %}
+                                                <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                                   href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                        <a class="h4 d-block mb-3 text-secondary text-uppercase font-weight-bold" href="/article?id={{ articles[15].id }}">
+                                            {{ articles[15].title|length > 30 ? articles[15].title|slice(0, 30) ~ '...' : articles[15].title }}
+                                        </a>
+                                        <p class="m-0">
+                                            {{ articles[15].text|length > 50 ? articles[15].text|slice(0, 50) ~ '...' : articles[15].text }}
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-between bg-white border-top mt-auto p-4">
+                                        <div class="d-flex align-items-center">
+                                            <small>{{ articles[15].username }}</small>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <small>{{ article.date|date('M d, Y') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% for article in articles[16:4] %}
+                            <div class="col-lg-6">
+                                <div class="d-flex align-items-center bg-white mb-3" style="height: 110px;">
+                                    <img class="img-fluid" src="{{ asset(article.image , "images") }}"
+                                         alt="{{ article.image }}" width="110px">
+                                    <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center border border-left-0">
+                                        <div class="mb-2">
+                                            {% for category in article.categories %}
+                                                <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                                   href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                                            {% endfor %}
+                                            <a class="text-body" href=""><small>{{ article.date|date('M d, Y') }}</small></a>
+                                        </div>
+                                        <a class="h6 m-0 text-secondary text-uppercase font-weight-bold" href="/article?id={{ article.id }}">
+                                            {{ article.title|length > 30 ? article.title|slice(0, 30) ~ '...' : article.title }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- News With Sidebar End -->
+
+{% endblock %}

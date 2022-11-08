@@ -57,7 +57,7 @@ class Container implements ContainerInterface
     {
         try {
             $reflectionClass = new \ReflectionClass($id);
-        } catch(ReflectionException $e) {
+        } catch (ReflectionException $e) {
             throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
         }
 

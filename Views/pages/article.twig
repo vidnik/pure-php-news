@@ -1,0 +1,108 @@
+{% extends "base.twig" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="container">
+            <div class="row">
+<div class="col-lg-12">
+    <!-- News Detail Start -->
+    <div class="position-relative mb-3">
+        <img class="img-fluid w-100" src="{{ asset(article.image , "images") }}"
+             alt="{{ article.image }}" style="object-fit: cover;">
+        <div class="bg-white border border-top-0 p-4">
+            <div class="mb-3">
+                {% for category in article.categories %}
+                    <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                           href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                {% endfor %}
+                <a class="text-body" href="">{{ article.date|date('M d, Y') }}</a>
+            </div>
+            <h1 class="mb-3 text-secondary text-uppercase font-weight-bold">{{ article.title }}</h1>
+            <p>{{ article.text }}</p>
+        </div>
+        <div class="d-flex justify-content-between bg-white border border-top-0 p-4">
+            <div class="d-flex align-items-center">
+                <span>{{ article.username }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- News Detail End -->
+    {% if "canManageOwnComments" in permissions or "canManageAllComments" in permissions %}
+    <div class="mb-3">
+        <div class="section-title mb-0">
+            <h4 class="m-0 text-uppercase font-weight-bold">Leave a comment</h4>
+        </div>
+        <div class="bg-white border border-top-0 p-4">
+            <form action="/comment/add?id={{ article.id }}" method ="post" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="text">Text *</label>
+                    <textarea id="text" cols="30" rows="5" class="form-control" name="text"></textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <input type="submit" value="Leave a comment"
+                           class="btn btn-primary font-weight-semi-bold py-2 px-3">
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Comment List Start -->
+    <div class="mb-3">
+        <div class="section-title mb-0">
+            <h4 class="m-0 text-uppercase font-weight-bold">Comments</h4>
+        </div>
+        <div class="bg-white border border-top-0 p-4">
+            {% for comment in comments %}
+            <div class="media mb-4">
+                <div class="media-body">
+                    <h6><a class="text-secondary font-weight-bold" href="">{{ comment.username }}</a>
+                        <small><i>{{ comment.datetime|date('M d, Y') }}</i></small></h6>
+                    <h5 class="text-secondary font-weight-bold">{{ comment.title }}</h5>
+                    <p>{{ comment.text }}</p>
+                    {% if "canManageOwnComments" in permissions or "canManageAllComments" in permissions %}
+                    <a class="btn btn-sm btn-outline-secondary" href="/comment/reply?id={{ comment.id }}">Reply</a>
+                    {% endif %}
+                    {% if ("canManageOwnComments" in permissions and comment.user == session.user_id) or "canManageAllComments" in permissions %}
+                        <a class="btn btn-sm btn-outline-secondary" href="/comment/edit?id={{ comment.id }}">Edit</a>
+                        <a class="btn btn-sm btn-outline-warning" href="/comment/delete?id={{ comment.id }}">Delete</a>
+                    {% endif %}
+                    {% for reply in comment.replies %}
+                        <div class="media mt-4 ml-5">
+                            <div class="media-body">
+                                <h6><a class="text-secondary font-weight-bold" href="">{{ reply.username }}</a> <small>
+                                        <i>{{ reply.datetime|date('M d, Y') }}</i></small></h6>
+                                <h5 class="text-secondary font-weight-bold">{{ reply.title }}</h5>
+                                <p>{{ reply.text }}</p>
+                                {% if ("canManageOwnComments" in permissions and comment.user == session.user_id) or "canManageAllComments" in permissions %}
+                                    <a class="btn btn-sm btn-outline-secondary" href="/comment/edit?id={{ reply.id }}">Edit</a>
+                                    <a class="btn btn-sm btn-outline-warning" href="/comment/delete?id={{ reply.id }}">Delete</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+                {% else %}
+                    <h4 class="m-0 text-uppercase font-weight-bold">There no any comment yet!</h4>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Comment List End -->
+
+
+</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

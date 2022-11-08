@@ -2,32 +2,44 @@
 
 namespace App\Controllers;
 
-
 use App\Core\Attributes\Get;
 use App\Core\Attributes\Post;
+use App\Core\Auth\Auth;
+use App\Core\Utils\Validator;
 use App\Core\View;
-use App\Models\UserAuth;
+use App\Models\Category;
+use App\Models\User;
+use Twig\Environment as Twig;
 
 class AuthController
 {
+    public function __construct(private Twig $twig)
+    {
+    }
+
     #[Get('/sign-up')]
-    public function SignUpIndex(): View
+    public function signUpIndex(): string
     {
         $data = [
             'username' => '',
             'email' =>  '',
             'password' => '',
             'confirmPassword' => '',
+        ];
+
+        $errors = [
             'usernameError' => '',
             'emailError' => '',
             'passwordError' => '',
             'confirmPasswordError' => ''
         ];
-        return View::make('users/sign-up', ["data" => $data]);
+        $categories = (new Category())->getAllCategories();
+        return $this->twig->render('auth/sign-up.twig', ["data" => $data, "errors"=>$errors,
+            'permissions'=>Auth::getUserPermissions(), "categories"=>$categories, 'session' => $_SESSION]);
     }
 
     #[Post('/sign-up')]
-    public function signUp(): View
+    public function signUp(): string
     {
         $_POST = filter_input_array(INPUT_POST);
         $data = [
@@ -35,139 +47,88 @@ class AuthController
             'email' => trim($_POST['email']),
             'password' => trim($_POST['password']),
             'confirmPassword' => trim($_POST['confirmPassword']),
-            'usernameError' => '',
-            'emailError' => '',
-            'passwordError' => '',
-            'confirmPasswordError' => ''
         ];
-        $data = $this->validateSignUpData($data);
+        $errors = Validator::validateUsername($data);
+        $errors = Validator::validateEmail($data, $errors);
+        $errors = Validator::validatePassword($data, $errors);
 
-        if (empty($data['usernameError']) && empty($data['emailError']) && empty($data['passwordError']) && empty($data['confirmPasswordError'])) {
-
+        $categories = (new Category())->getAllCategories();
+        if (empty($errors['usernameError']) && empty($errors['emailError']) &&
+            empty($errors['passwordError']) && empty($errors['confirmPasswordError'])) {
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-            if ((new UserAuth())->signUp($data)) {
-                return View::make('users/log-in');
-            } else {
-                return View::make('error/500');
-            }
+            $userId =(new User())->signUp(['username'=>$data['username'], 'email'=>$data['email'],
+                'password'=>$data['password']]) ;
+            $defaultGroups = (new \App\Models\Auth())->getDefaultGroups();
+            (new \App\Models\Auth())->updateUserGroups($userId, $defaultGroups);
+            header('Location: /log-in');
+            die();
         } else {
-            return View::make('users/sign-up', ["data" => $data]);
+            return $this->twig->render('auth/sign-up.twig', ["data" => $data, "errors" => $errors,
+                'permissions'=>Auth::getUserPermissions(), "categories"=>$categories, 'session' => $_SESSION]);
         }
     }
 
     #[Get('/log-in')]
-    public function LogInIndex(): View
+    public function logInIndex(): string
     {
         $data = [
             'username' => '',
-            'password' => '',
+            'password' => ''
+        ];
+        $errors = [
             'usernameError' => '',
             'passwordError' => ''
         ];
-        return View::make('users/log-in', ["data" => $data]);
+        $categories = (new Category())->getAllCategories();
+        return $this->twig->render('auth/log-in.twig', ["data" => $data, "errors" => $errors,
+            'permissions'=>Auth::getUserPermissions(), "categories"=>$categories, 'session' => $_SESSION]);
     }
 
     #[Post('/log-in')]
-    public function LogIn(): View
+    public function logIn(): string
     {
         $_POST = filter_input_array(INPUT_POST);
+
         $data = [
             'username' => trim($_POST['username']),
             'password' => trim($_POST['password']),
-            'usernameError' => '',
-            'passwordError' => '',
         ];
-        $data = $this->validateLogInData($data);
 
-        if (empty($data['usernameError']) && empty($data['passwordError'])) {
-            #$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        $errors = Validator::validateLogInData($data);
 
-            $loggedInUser = (new UserAuth())->logIn(username:$data['username'], password:$data['password']);
+        $categories = (new Category())->getAllCategories();
+
+        if (empty($errors['usernameError']) && empty($errors['passwordError'])) {
+            $loggedInUser = (new User())->logIn(username:$data['username'], password:$data['password']);
 
             if ($loggedInUser) {
                 $this->createUserSession($loggedInUser);
-                return View::make('index');
-
+                header('Location: /');
+                die();
             } else {
-                $data['passwordError'] = 'Password or username is incorrect. Please try again.';
+                $errors['passwordError'] = 'Password or username is incorrect. Please try again.';
 
-                return View::make('users/log-in', ["data" => $data]);
+                return $this->twig->render('auth/log-in.twig', ["data" => $data, "errors"=>$errors,
+                    'permissions'=>Auth::getUserPermissions(), "categories"=>$categories, 'session' => $_SESSION]);
             }
         } else {
-            return View::make('users/log-in', ["data" => $data]);
+            return $this->twig->render('auth/log-in.twig', ["data" => $data, "errors"=>$errors,
+                'permissions'=>Auth::getUserPermissions(), "categories"=>$categories, 'session' => $_SESSION]);
         }
     }
 
     #[get('/log-out')]
-    public function logOut(): View {
+    public function logOut(): string
+    {
         if (!empty($_SESSION)) {
             if (session_destroy()) {
-                return View::make('index');
+                header('Location: /');
+                die();
             }
         }
-        return View::make('index');
-    }
-
-    private function validateSignUpData(array $data):array
-    {
-        $nameValidation = "/^[a-zA-Z0-9]*$/";
-        $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
-
-        //Validate username on letters/numbers
-        if (empty($data['username'])) {
-            $data['usernameError'] = 'Please enter username.';
-        } elseif (!preg_match($nameValidation, $data['username'])) {
-            $data['usernameError'] = 'Name can only contain letters and numbers.';
-        } else
-            //Check if email exists.
-            if ((new UserAuth())->doesUsernameExist($data['username'])) {
-                $data['usernameError'] = 'Username is already taken.';
-            }
-
-        //Validate email
-        if (empty($data['email'])) {
-            $data['emailError'] = 'Please enter email address.';
-        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $data['emailError'] = 'Please enter the correct format.';
-        } else {
-            //Check if email exists.
-            if ((new UserAuth())->doesEmailExist($data['email'])) {
-                $data['emailError'] = 'Email is already taken.';
-            }
-        }
-
-        // Validate password on length, numeric values,
-        if(empty($data['password'])){
-            $data['passwordError'] = 'Please enter password.';
-        } elseif(strlen($data['password']) < 6){
-            $data['passwordError'] = 'Password must be at least 8 characters';
-        } elseif (preg_match($passwordValidation, $data['password'])) {
-            $data['passwordError'] = 'Password must be have at least one numeric value.';
-        }
-
-        //Validate confirm password
-        if (empty($data['confirmPassword'])) {
-            $data['confirmPasswordError'] = 'Please enter password.';
-        } else {
-            if ($data['password'] != $data['confirmPassword']) {
-                $data['confirmPasswordError'] = 'Passwords do not match, please try again.';
-            }
-        }
-        return $data;
-    }
-
-    private function validateLogInData(array $data):array
-    {
-        if (empty($data['username'])) {
-            $data['usernameError'] = 'Please enter a username.';
-        }
-
-        //Validate password
-        if (empty($data['password'])) {
-            $data['passwordError'] = 'Please enter a password.';
-        }
-        return $data;
+        header('Location: /');
+        die();
     }
 
     private function createUserSession($user): void

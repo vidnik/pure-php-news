@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Core;
 
 use App\Core\Exceptions\Routing\RouteNotFoundException;
+use App\Core\Utils\ErrorHandler;
 use Dotenv\Dotenv;
 use Symfony\Bridge\Twig\Extension\AssetExtension;
 use Symfony\Component\Asset\Package;
@@ -45,7 +46,9 @@ class App
 
         $versionStrategy = new EmptyVersionStrategy();
         $namedPackages = array(
-            'css' => new PathPackage('/assets/css', $versionStrategy),
+            'assets' => new PathPackage('/assets', $versionStrategy),
+            'upload' => new PathPackage('/upload', $versionStrategy),
+            'images' => new PathPackage('/upload/images', $versionStrategy),
         );
         $defaultPackage = new Package($versionStrategy);
         $packages = new Packages($defaultPackage, $namedPackages);
@@ -66,9 +69,7 @@ class App
         try {
             echo $this->router->resolve($this->request['uri'], strtolower($this->request['method']));
         } catch (RouteNotFoundException) {
-            http_response_code(404);
-
-            echo View::make('error/404');
+            echo $this->container->get(Environment::class)->render('error.twig', ErrorHandler::causeError(404));
         }
     }
 }

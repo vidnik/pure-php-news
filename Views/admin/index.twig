@@ -1,0 +1,44 @@
+﻿{% extends "admin/base.twig" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+    <div class="mt-5 text-center">
+        <h1>User management page</h1>
+    </div>
+    <div class="d-flex justify-content-center container mt-5">
+        <div class="w-100">
+            <a class="btn btn-primary col-2 mb-4 ms-auto" href="admin/user/add" role="button">Add new user</a>
+
+            <div class="justify-content-center">
+                <div class="flextable">
+                    <div class="flex_row">
+                        <div class="flex_field">id</div>
+                        <div class="flex_field">username</div>
+                        <div class="flex_field">email</div>
+                        <div class="flex_field">superuser</div>
+                        <div class="flex_field">staff</div>
+                        <div class="flex_field">active</div>
+                    </div>
+
+                    {% for user in users %}
+                        <a href="/admin/user/update?id={{ user.id }}">
+                            <div class="flex_row ">
+                                <div class="flex_field">{{ user.id }}</div>
+                                <div class="flex_field">{{ user.username }}</div>
+                                <div class="flex_field">{{ user.email }}</div>
+                                <div class="flex_field">{{ user.is_superuser }}</div>
+                                <div class="flex_field">{{ user.is_staff }}</div>
+                                <div class="flex_field">{{ user.is_active }}</div>
+                            </div>
+                        </a>
+                    {% else %}
+                        There no any user in db (impossible if you're here)
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

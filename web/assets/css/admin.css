@@ -1,0 +1,42 @@
+
+.flextable {
+    display: grid;
+    text-decoration: none;
+}
+
+.flextable .flex_row {
+    width: 100%;
+    display: flex;
+    padding: 15px;
+}
+
+.flextable .flex_row .flex_field {
+    align-items: center;
+    display: grid;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.flextable .flex_row .flex_field a {
+    color: #0095DE;
+}
+
+.flextable .flex_row {
+    border-bottom: #e1e1e1;
+    color: black;
+    border-bottom-width: 1px;border-bottom-style: solid;
+}
+
+.flextable .flex_row:last-child {
+    border-bottom-width: 0;
+}
+
+.flextable .flex_row:hover {
+    background: #0095DE;
+    color: white;
+}
+
+
+.flextable .flex_row:hover a {
+    color: #fff;
+}

@@ -30,7 +30,7 @@ class View
             throw new ViewNotFoundException('view on "'.$viewPath.'" doesn\'nt exist');
         }
 
-        foreach($this->params as $key => $value) {
+        foreach ($this->params as $key => $value) {
             $$key = $value;
         }
 

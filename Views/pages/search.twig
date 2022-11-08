@@ -1,0 +1,53 @@
+{% extends "base.twig" %}
+
+{% block title %}{{ query }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="row">
+    <div class="col-12 mt-4">
+        <div class="section-title">
+            <h4 class="m-0 text-uppercase font-weight-bold">RESULTS FOR "{{ query }}"</h4>
+        </div>
+    </div>
+    {% for article in articles %}
+        <div class="col-lg-4">
+            <div class="position-relative mb-3">
+                <img class="img-fluid w-100" src="{{ asset(article.image , "images") }}"
+                     alt="{{ article.image }}" style="object-fit: cover;">
+                <div class="bg-white border border-top-0 p-4">
+                    <div class="mb-2">
+                        {% for category in article.categories %}
+                            <a class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                               href="/category?name={{ category.slug }}">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                    <a class="h4 d-block mb-3 text-secondary text-uppercase font-weight-bold" href="/article?id={{ article.id }}">
+                        {{ article.title|length > 55 ? article.title|slice(0, 55) ~ '...' : article.title }}
+                    </a>
+                    <p class="m-0">
+                        {{ article.text|length > 100 ? article.text|slice(0, 100) ~ '...' : article.text }}
+                    </p>
+                </div>
+                <div class="d-flex justify-content-between bg-white border border-top-0 p-4">
+                    <div class="d-flex align-items-center">
+                        <small>{{ article.username }}</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <small>{{ article.date|date('M d, Y') }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}

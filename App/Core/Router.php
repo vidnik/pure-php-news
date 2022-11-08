@@ -28,13 +28,13 @@ class Router
      */
     public function registerControllerRoutes(array $controllers): void
     {
-        foreach($controllers as $controller) {
+        foreach ($controllers as $controller) {
             $reflectionController = new \ReflectionClass($controller);
 
-            foreach($reflectionController->getMethods() as $method) {
+            foreach ($reflectionController->getMethods() as $method) {
                 $attributes = $method->getAttributes(Route::class, \ReflectionAttribute::IS_INSTANCEOF);
 
-                foreach($attributes as $attribute) {
+                foreach ($attributes as $attribute) {
                     $route = $attribute->newInstance();
 
                     $this->register($route->method->value, $route->routePath, [$controller, $method->getName()]);
